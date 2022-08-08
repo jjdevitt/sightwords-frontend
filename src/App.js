@@ -27,13 +27,21 @@ const App = () => {
       setNewWord('')
     })
   }
-  const wordChange =  (event)=> setNewWord(event.target.value)
+  const wordChange =  (event) => setNewWord(event.target.value)
+
+  const removeWord = (id) => {
+    console.log('remove =>', id)
+    wordClient.remove(id).then( result => {
+      console.log('deleted => ', result)
+      setAllWords(allWords.filter(word => word.id!==id))
+    })
+  }
 
   if(gameMode){
     return <Game sightWord={sightWord} onClick={()=>setSightWord(getRandom(allWords))}/>
   } else if(editMode){
     return <EditWords allWords={allWords} gameModeOnClick={gameModeOnClick} 
-    addWord={addWord} wordChange={wordChange} newWord={newWord}/>
+    addWord={addWord} wordChange={wordChange} newWord={newWord} removeWord={removeWord}/>
   } else {
     return <MainMenu gameModeOnClick={gameModeOnClick} editModeOnClick={editModeOnClick}/>
   }
@@ -48,8 +56,8 @@ const Game = ({sightWord, onClick}) => {
   )
 }
 
-const EditWords = ({allWords, gameModeOnClick, addWord, wordChange, newWord}) => {
-  let wordList = allWords.map(word=><li key={word.id} class='listitem'>{word.text}</li>)
+const EditWords = ({allWords, gameModeOnClick, addWord, wordChange, newWord,removeWord}) => {
+  let wordList = allWords.map(word=><li key={word.id} class='listitem'>{word.text}<button onClick={()=>removeWord(word.id)}>remove</button></li>)
   return (
     <div>
       <ul>{wordList}</ul>
