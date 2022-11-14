@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import wordClient from './client/wordClient'
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 const App = () => {
   
@@ -9,6 +10,7 @@ const App = () => {
   const [gameMode, setGameMode] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [newWord, setNewWord] = useState('')
+  const { speak } = useSpeechSynthesis();
 
   useEffect(() => {
     wordClient.getAll().then(returnedWords => {
@@ -21,11 +23,16 @@ const App = () => {
   const editModeOnClick = () => setEditMode(true)
   const addWord = (event) => {
     event.preventDefault()
-    wordClient.create({text: newWord}).then( result => {
-      console.log('response from create=>', result)
-      setAllWords(allWords.concat(result))
+    if(allWords.map(word => word.text).includes(newWord)){
+      console.log('word already there, skippng...')
       setNewWord('')
-    })
+    } else {
+      wordClient.create({text: newWord}).then( result => {
+        console.log('response from create=>', result)
+        setAllWords(allWords.concat(result))
+        setNewWord('')
+      })
+    }
   }
   const wordChange =  (event) => setNewWord(event.target.value)
 
@@ -38,7 +45,7 @@ const App = () => {
   }
 
   if(gameMode){
-    return <Game sightWord={sightWord} onClick={()=>setSightWord(getRandom(allWords))}/>
+    return <Game sightWord={sightWord} onClick={()=>{speak({text: sightWord, rate:0.75}); setSightWord(getRandom(allWords))}}/>
   } else if(editMode){
     return <EditWords allWords={allWords} gameModeOnClick={gameModeOnClick} 
     addWord={addWord} wordChange={wordChange} newWord={newWord} removeWord={removeWord}/>
