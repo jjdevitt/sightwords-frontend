@@ -12,7 +12,6 @@ const create = newObject => {
 
 const remove = deleteId => {
   return axios.delete(baseUrl + '/' +deleteId).then(result => result.data)
-
 }
 
 
