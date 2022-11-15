@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import wordClient from '../client/wordClient'
 
-const EditWords = ({allWords, setAllWords}) => {
+const EditWords = ({allWords, setAllWords, returnToMenu}) => {
     const [newWord, setNewWord] = useState('')
 
     const addWord = (event) => {
@@ -34,6 +34,7 @@ const EditWords = ({allWords, setAllWords}) => {
           <input onChange={wordChange} value={newWord}/>
           <button type='submit'>save</button>
         </form>
+        <button onClick={returnToMenu}>Return To Menu</button>
       </div>
     )
   }

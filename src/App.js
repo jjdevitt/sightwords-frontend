@@ -16,12 +16,16 @@ const App = () => {
     })
   },[])
 
+  const returnToMenu = () => {
+    setMode('Menu')
+  }
+
   // Main menu
   switch(mode){
     case 'SightWordGame':
       return <SightWordGame allWords={allWords}/>
     case 'Edit':
-      return <EditWords allWords={allWords} setAllWords={setAllWords}/>
+      return <EditWords allWords={allWords} setAllWords={setAllWords} returnToMenu={returnToMenu}/>
     default: 
       return (
         <div>
