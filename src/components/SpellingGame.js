@@ -7,34 +7,51 @@ import { getRandom } from '../util/util';
 
 const SpellingGame = ({allWords}) => {
 
-  const [word, setWord] = useState(() => getRandom(allWords))
-  const [guess, setGuess ] = useState(Array(word.length).fill('_').join(""))
-  const { speak } = useSpeechSynthesis()
+  const [word, setWord] = useState('')
+  const [guess, setGuess ] = useState('')
   const [guessIndex, setGuessIndex] = useState(0)
+  const { speak } = useSpeechSynthesis()
+
+  useEffect(()=> {
+    console.log('state init')
+    const newWord =  getRandom(allWords);
+    setWord(newWord)
+    setGuess(Array(newWord.length).fill('_').join(""))
+    setGuessIndex(0)
+    setTimeout( () => {
+      speak({text:newWord, rate:0.50})
+    }, 1000)
+    
+  }, [])
 
   useEffect(() => {
-    document.addEventListener('keydown', onGuess, true);
-  })
-
-  const onGuess = (event) => {
-    console.log(`Guess ${event.key} index=${guessIndex} targetWord=${word} currentGuessProgress=${guess}`)
-    if(event.key==Array.from(word)[guessIndex]){
-      
-      if (guessIndex===word.length-1) {
-        console.log('Successful full guess, reseting...')
-        const newWord = getRandom(allWords)
-        setWord(newWord)
-        setGuess(Array(word.length).fill('_').join(""))
-        setGuessIndex(0)
-        speak({text: newWord, rate:0.50});
-      } else {
+    const onGuess = (event) => {
+      console.log(`Guess ${event.key} index=${guessIndex} targetWord=${word} currentGuessProgress=${guess}`)
+      if(event.key===Array.from(word)[guessIndex]){
         let tmp = [...guess]
         tmp[guessIndex]=event.key
-        setGuess(tmp.join(''))
-        setGuessIndex(guessIndex+1)
-      }
-    } 
-  }
+        console.log('updated guess=>',tmp)
+        let guessWord = tmp.join('')
+  
+        if(guessWord===word){
+          console.log('game completed!!!!!!!')
+          const newWord =  getRandom(allWords);
+          setWord(newWord)
+          setGuess(Array(newWord.length).fill('_').join(""))
+          setGuessIndex(0)
+          speak({text: newWord, rate:0.50})
+        } else {
+          console.log('game continues...')
+          setGuess(tmp.join(''))
+          setGuessIndex(guessIndex+1)
+        }
+      } 
+    }
+    window.addEventListener('keydown', onGuess);
+    return () => {
+      window.removeEventListener("keydown", onGuess);
+    }
+  })
 
   return (
     <div> 
