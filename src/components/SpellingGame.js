@@ -3,8 +3,6 @@ import { useSpeechSynthesis } from 'react-speech-kit';
 import { useState, useEffect } from 'react'
 import { getRandom } from '../util/util';
 
-
-
 const SpellingGame = ({allWords}) => {
 
   const [word, setWord] = useState('')
@@ -35,15 +33,19 @@ const SpellingGame = ({allWords}) => {
   
         if(guessWord===word){
           console.log('game completed!!!!!!!')
-          const newWord =  getRandom(allWords);
-          setWord(newWord)
-          setGuess(Array(newWord.length).fill('_').join(""))
-          setGuessIndex(0)
-          speak({text: newWord, rate:0.50})
+          setGuess(tmp.join(''))
+          setTimeout( () => {
+            const newWord =  getRandom(allWords);
+            setWord(newWord)
+            setGuess(Array(newWord.length).fill('_').join(""))
+            setGuessIndex(0)
+            speak({text: newWord, rate:0.50})
+          }, 1000);
         } else {
           console.log('game continues...')
           setGuess(tmp.join(''))
           setGuessIndex(guessIndex+1)
+         
         }
       } 
     }
@@ -54,9 +56,12 @@ const SpellingGame = ({allWords}) => {
   })
 
   return (
-    <div> 
-     <p>{guess}</p>
-      <p><button onClick={() => speak({text: word, rate:0.65})}>Play word again</button></p>
+    <div class='fullscreenDiv'> 
+     <div class="center">
+      <h1 size="+3">{Array.from(guess).map(c => c + " ").join("")}</h1>
+      <br/>
+        <p><button onClick={() => speak({text: word, rate:0.65})}>Play word again</button></p>
+      </div>
     </div>
     )
   }
