@@ -9,8 +9,11 @@ const SightWordGame = ({allWords}) => {
     const [sightWord, setSightWord] = useState(() => getRandom(allWords))
 
     const onClick = () => {
-        speak({text: sightWord, rate:0.75})
-        setSightWord(getRandom(allWords))
+
+      speak({text: sightWord, rate:0.75})
+      setTimeout( () => {
+          setSightWord(getRandom(allWords))
+      }, 1000)
     }
     return (
       <div> 
