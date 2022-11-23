@@ -1,7 +1,7 @@
-
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { useState, useEffect } from 'react'
 import { getRandom } from '../util/util';
+import getSentence from '../client/sentenceClient'
 
 const SpellingGame = ({allWords}) => {
 
@@ -55,12 +55,19 @@ const SpellingGame = ({allWords}) => {
     }
   })
 
+  const generateSentence =  (word) => {
+    getSentence(word).then( result => {
+      console.log('result =>', result)
+      speak({text: result, rate:0.5})
+    })
+  }
   return (
     <div class='fullscreenDiv'> 
      <div class="center">
       <h1 size="+3">{Array.from(guess).map(c => c + " ").join("")}</h1>
       <br/>
         <p><button onClick={() => speak({text: word, rate:0.65})}>Play word again</button></p>
+        <p><button onClick={() => generateSentence(word)}>Use the word in a sentence</button></p>
       </div>
     </div>
     )
